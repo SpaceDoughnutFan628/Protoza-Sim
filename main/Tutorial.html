@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				background-color: #7FFFD4;
+			}
+			div {
+				position: absolute;
+				transform: translate(50%,50%);
+				height: 50%;
+				width: 50%;
+				border: solid 10px #b3ffe6;
+			}
+			img {
+				width: 100%;
+				max-height: 100%;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<script>
+			var Counter = 1;
+			
+			function NextPage(){
+				document.getElementsByTagName("img")[0].src = "PictureFolder/TutorialPic/Tutor" + Counter + ".png";
+				if (Counter == 10){
+					const GoBack = document.createElement('a');
+					GoBack.href = "index.html";
+					document.getElementsByTagName('div')[0].appendChild(GoBack);
+					GoBack.appendChild(document.getElementsByTagName('img')[0]);
+				}else{
+					Counter += 1;
+				}
+			}
+		</script>
+		<div onclick="NextPage()">
+			<img src="PictureFolder/TutorialPic/Tutor0.png">
+		</div>
+	</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+				background-image: url("PictureFolder/Placeholder.gif");
+				background-repeat: no-repeat;
+				background-attachment: fixed;
+				background-size: cover;
+			}
+			#Container {
+				color: #29a3a3;
+				text-align: center;
+				font-size: 1px;
+				font-weight: bold;
+				opacity: 0;
+				transition: opacity 2s, font-size 2s;  
+				transition-timing-function: ease-in-out;
+			}
+			#Title {
+				text-align: center;
+				color: #38e038;
+				padding: 10px;
+				margin: 1px;
+				font-size: 1px;
+				font-weight: bold;
+				opacity: 0;
+				transition: opacity 1s, font-size 1s, margin 1s; 
+				transition-timing-function: ease-in-out;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<div id="Title">
+			"A brief explanation of protozoa"
+		</div>
+		<div id="Container">
+			<blockquote>
+				The Protozoa are considered to be a subkingdom of the kingdom Protista, although in the classical system they were placed in the kingdom Animalia. 
+				More than 50,000 species have been described, most of which are free-living organisms; protozoa are found in almost every possible habitat. 
+				The fossil record in the form of shells in sedimentary rocks shows that protozoa were present in the Pre-cambrian era. 
+				Anton van Leeuwenhoek was the first person to see protozoa, using microscopes he constructed with simple lenses. 
+				Between 1674 and 1716, he described, in addition to free-living protozoa, several parasitic species from animals, 
+				and Giardia lamblia from his own stools. Virtually all humans have protozoa living in or on their body at some time, 
+				and many persons are infected with one or more species throughout their life. Some species are considered commensals, 
+				i.e., normally not harmful, whereas others are pathogens and usually produce disease.
+			</blockquote>
+		</div>
+		<script>
+			const WindowY = window.innerHeight;
+			let Title = document.getElementById("Title");
+			let Container = document.getElementById("Container");
+			
+			window.addEventListener('load',function() {
+				Title.style.opacity = 1;
+				Title.style.margin = WindowY/14 + "px";
+				Title.style.fontSize = 1.5*WindowY/40 + "px";
+				Container.style.opacity = 1;
+				Container.style.fontSize = WindowY/40 + "px";
+				console.log(WindowY);
+			},false);
+		</script>
+	</body>
+</html>

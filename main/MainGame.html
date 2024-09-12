@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+		body {
+			background-color: rgb(255,255,255);
+			overflow: hidden;
+		}
+		.ScopeCoverH {
+			position: absolute;
+			background-color: black;
+			z-Index: 2;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+		.ScopeCoverV {
+			position: absolute;
+			background-color: black;
+			z-Index: 2;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+		}
+		#ScopeCoverM {
+			position: absolute;
+			z-Index: -1;
+			aspect-ratio: 1/1;
+			opacity: 1;
+			background-color: white;
+		}
+		#ScopeCoverM:after {
+			content: '';
+			position:absolute;
+			left:50%;
+			top: 50%;
+			transform: translate(-50%,-50%);
+			border-radius:50%;
+			aspect-ratio: 1/1;
+			width: 100%;
+			border: 10000px solid black;
+		}
+		.Protozoa {
+			position: absolute;
+			aspect-ratio: 1/1;
+		}
+		.Arcella {
+			width: 4%;
+		}
+		.Paramecium {
+			width: 4%;
+		}
+		.Vorticella {
+			width: 4%;
+		}
+		.Euglena {
+			width: 4%;
+		}
+		.Volvox {
+			width: 4%;
+		}
+		.Desmodesmus {
+			width: 4%;
+		}
+		.Pediastrum {
+			width: 4%;
+		}
+		.Vampyrella {
+			width: 4%;
+		}
+		.Phacus {
+			width: 4%;
+		}
+		.Spirogyra {
+			width: 4%;
+		}
+		#MagnifBtn {
+			aspect-ratio: 1/1;
+			width: 125px;
+			transition: transform 2s;
+		}
+		#DiaphamBtn {
+			aspect-ratio: 1/1;
+			width: 125px;
+			transition: transform 2s;
+		}
+		#FineBtn {
+			aspect-ratio: 1/1;
+			width: 125px;
+			transition: transform 2s;
+		}
+		.MovementBtn {
+			aspect-ratio: 1/1;
+			width: 50px;
+		}
+		.ArrowContainer {
+			display: flex;
+			flex-direction: column;
+		}
+		.HitBox {
+			position: absolute;
+			aspect-ratio: 1/1;
+		}
+		img {
+			height: 100%;
+			width: 100%;
+		}
+		</style>
+	</head>
+	<body>
+		<script>
+			const Magnifcation = [4 , 4*10/4 , 4*10];
+			const StagePos = [0,0]; //Position of stage X , Position of stage Y
+			const ProtozoaPosition = [["Nigga",0,0,0]]; //Protoza id, X axis, Y axis, rotation 
+			var MCount = 0; //This variable define the current magnification
+			var BCount = 0; //This variable define how bright the microscope is
+			var BlurVision = 0;
+			var win = window,
+			doc = document,
+			docElem = doc.documentElement,
+			body = doc.getElementsByTagName('body')[0],
+			WindowX = win.innerWidth || docElem.clientWidth || body.clientWidth,
+			WindowY = win.innerHeight|| docElem.clientHeight|| body.clientHeight;
+			
+			function setCookie(exdays) {
+				const d = new Date();
+				d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+				let expires = "expires=" + d.toUTCString();
+				document.cookie = expires + ";path=/"; //Expire Date
+				document.cookie = "Discovered=[0,0,0,0,0,0,0,0,0,0];"; //Discovered protozoa
+				document.cookie = "GenSet=None,None;"; //Set of protozoa that can be spawn
+				document.cookie = "AxlRose=1;";
+			}
+			
+			function getCookie(cname) {
+				let name = cname + "=";
+				let decodedCookie = decodeURIComponent(document.cookie);
+				let ca = decodedCookie.split(';');
+				for(let i = 0; i < ca.length; i++) {
+					let c = ca[i];
+					while (c.charAt(0) == ' ') {
+						c = c.substring(1);
+					}
+					if (c.indexOf(name) == 0) {
+						return c.substring(name.length, c.length);
+					}
+				}
+				return "";
+			}
+			
+			function SetCovers (){
+				var CoverH = document.getElementsByClassName("ScopeCoverH");
+				var CoverV = document.getElementsByClassName("ScopeCoverV");
+				for(var i = 0; i < CoverH.length; i++){
+					CoverH[i].style.width = WindowX + "px";
+					CoverH[i].style.height = WindowY/4 + "px";
+				}
+				for(var i = 0; i < CoverV.length; i++){
+					CoverV[i].style.width = (WindowX - WindowY/2)/2 + "px";
+					CoverV[i].style.height = WindowY/2 + "px";
+					CoverV[i].style.transform = "translateY(" + WindowY/4 + "px)";
+				}
+				document.getElementById("DownCover").style.transform = "translateY(" + 3*WindowY/4 + "px)";
+				document.getElementById("RightCover").style.transform = "translate(" + ((WindowX - WindowY/2)/2 + WindowY/2) + "px," + WindowY/4 + "px)";
+				document.getElementById("ScopeCoverM").style.height = WindowY/2 + "px";
+				document.getElementById("ScopeCoverM").style.transform = "translate(" + ((WindowX - WindowY/2)/2) + "px," + WindowY/4 + "px)";
+				document.getElementById("MagnifBtn").style.width = WindowY/4 + "px";
+				document.getElementById("DiaphamBtn").style.width = WindowY/4 + "px";
+				document.getElementById("FineBtn").style.width = WindowY/4 + "px";
+			}
+			
+			function DiscoverNewProtozoa(Which){
+				var DiscoverList = getCookie("Discovered");
+				var DiscoverList = DiscoverList.split('');
+				var PosInList = 0;
+				if (Which == "Pediastrum"){ //Man I hate using if else
+					PosInList = 1;
+				}else if (Which == "Arcella"){
+					PosInList = 3;
+				}else if (Which == "Vampyrella"){
+					PosInList = 5;
+				}else if (Which == "Desmodesmus"){
+					PosInList = 7;
+				}else if (Which == "Euglena"){
+					PosInList = 9;
+				}else if (Which == "Paramecium"){
+					PosInList = 11;
+				}else if (Which == "Phacus"){
+					PosInList = 13;
+				}else if (Which == "Volvox"){
+					PosInList = 15;
+				}else if (Which == "Vorticella"){
+					PosInList = 17;
+				}else if (Which == "Spirogyra"){
+					PosInList = 19;
+				}
+				console.log(DiscoverList);
+				if (DiscoverList[PosInList] == '0'){
+					DiscoverList[PosInList] = '1';
+					for (let i = 0; i < DiscoverList.length; i++){ //Patch ',' hole in the array
+						if (DiscoverList[i] == ',' || DiscoverList[i] == '[' || DiscoverList[i] == ']'){
+							DiscoverList = DiscoverList.copyWithin(i,i+1,DiscoverList.length);
+							DiscoverList.pop();
+						}
+					}
+					var DiscoverList = DiscoverList.toString();
+					console.log(DiscoverList);
+					alert('New ' + Which + ' Found!');
+					document.cookie = "Discovered=[" + DiscoverList + "];"; //document.cookie = "Discovered=[0,0,0];";
+					console.log(getCookie("Discovered"));
+				}
+			}
+			
+			function GenProtozoa (List, Density){
+				for (var i = 0; i < Density; i++) {
+					const Which = Math.floor(Math.random() * List.length) + 0;
+					const Zoa = document.createElement("div");
+						Zoa.id = "GenZoan " + i;
+						Zoa.className = List[Which] + " Protozoa";
+						Zoa.style.zIndex = -2;
+						Zoa.style.transition = "transform 0.5s";
+						document.body.appendChild(Zoa);
+						
+					const ProtozaPic = document.createElement("img");
+						ProtozaPic.src = "PictureFolder/ProtozoaSprite/" + List[Which] + "/0.png";
+						ProtozaPic.className = List[Which] + " Pic";
+						ProtozaPic.id = "ProtozaPic " + i;
+						ProtozaPic.style.height = "100%";
+						ProtozaPic.style.width = "100%";
+						ProtozaPic.draggable = "false";
+						Zoa.appendChild(ProtozaPic);
+						
+					const HitBox = document.createElement("div");
+						HitBox.id = "HitBox " + i;
+						HitBox.className = List[Which] + " HitBox";
+						HitBox.style.zIndex = 1;
+						HitBox.addEventListener('click', function() {DiscoverNewProtozoa(List[Which]);});
+						document.body.appendChild(HitBox);
+						
+						var PosPosUn = Math.floor(Math.random() * WindowX);
+						var PosPosDeux = Math.floor(Math.random() * WindowY);
+						ProtozoaPosition.push([Zoa.id, PosPosUn, PosPosDeux, 0]);
+						Zoa.style.transform = "translate(" + PosPosUn + "px," + PosPosDeux + "px)";
+						HitBox.style.transform = "translate(" + PosPosUn + "px," + PosPosDeux + "px)";
+						console.log(ProtozoaPosition[ProtozoaPosition.length - 1]);
+				}
+			}
+			
+			function SetSize (){
+				var Zoa = document.getElementsByClassName("Protozoa");
+				var HitBox = document.getElementsByClassName("HitBox");
+				var MagnifBtn = document.getElementById("MagnifBtn");
+				for(var i = 0; i < Zoa.length; i++){
+					Zoa[i].style.width = Magnifcation[MCount] + "%";
+				}
+				for(var i = 0; i < Zoa.length; i++){
+					HitBox[i].style.width = Magnifcation[MCount] + "%";
+				}
+				if (MCount == 0){
+					MagnifBtn.style.transform = "rotate(360deg)";
+					MCount += 1;
+				}else if (MCount == 1){
+					MagnifBtn.style.transform = "rotate(120deg)";
+					MCount += 1;
+				}else if (MCount == 2){
+					MagnifBtn.style.transform = "rotate(240deg)";
+					MCount = 0;
+				}
+			}
+			
+			function MoveStage (Direction){
+				var Zoa = document.getElementsByClassName("Protozoa");
+				switch(Direction){
+						case 1:
+							StagePos[1] -= Magnifcation[MCount];
+							break;
+						case 2:
+							StagePos[0] -= Magnifcation[MCount];
+							break;
+						case 3:
+							StagePos[1] += Magnifcation[MCount];
+							break;
+						case 4:
+							StagePos[0] += Magnifcation[MCount];
+							break;
+						default:
+							console.log("Welcome to the jungle");
+					}
+				for (var i = 0; i < Zoa.length; i++){
+					for (let b = 0; b < ProtozoaPosition.length; b++){ //Is there a way to use indexOf with multidimensional array, I wonder
+						if (ProtozoaPosition[b][0] == ("GenZoan " + i)){
+							Zoa[i].style.transform = "translate(" + (StagePos[0] + ProtozoaPosition[b][1]) + "px," + (StagePos[1] + ProtozoaPosition[b][2]) + "px) " + "rotate(" + ProtozoaPosition[b][3] + "deg)";
+							document.getElementById("HitBox " + i).style.transform = "translate(" + (StagePos[0] + ProtozoaPosition[b][1]) + "px," + (StagePos[1] + ProtozoaPosition[b][2]) + "px) " + "rotate(" + ProtozoaPosition[b][3] + "deg)";
+							break;
+						}
+					}
+				}
+				console.log(MCount);
+			}
+			
+			function ProtozoaMove (List){ //I hate this function, but it contains the ai of all protozoas
+				var MoveDistance = Magnifcation[MCount];
+				for (var i = 0; i < List.length; i++){
+					for (var b = 0; b < ProtozoaPosition.length; b++){
+						if (ProtozoaPosition[b][0] == List[i].id){
+							var HitBoxIdd = List[i].id;
+							var HitBoxIdd = HitBoxIdd.split('');
+							var HitBoxIdd = HitBoxIdd[HitBoxIdd.length - 1];
+							var Direction = 0;
+							switch(Math.floor(Math.random() * 3)){ //Random the direction
+								case 0:
+									Direction = (ProtozoaPosition[b][3])/45 - 1; //Turn left
+									if (Direction < 1){
+										Direction = 7;
+									}
+									break;
+								case 1:
+									Direction = (ProtozoaPosition[b][3])/45 + 1; //Turn Right
+									break;
+								case 2:
+									Direction = (ProtozoaPosition[b][3])/45; //Go Straight
+							}
+							switch(Direction){ //8 paths, determined by previous path. can only turn 45 degrees from previous path.
+								case 4: //South
+									ProtozoaPosition[b][1] += 0;
+									ProtozoaPosition[b][2] += MoveDistance;
+									ProtozoaPosition[b][3] = 180;
+									break;
+								case 3: //South East
+									ProtozoaPosition[b][1] += MoveDistance;
+									ProtozoaPosition[b][2] += MoveDistance;
+									ProtozoaPosition[b][3] = 135;
+									break;
+								case 2: //East
+									ProtozoaPosition[b][1] += MoveDistance;
+									ProtozoaPosition[b][2] += 0;
+									ProtozoaPosition[b][3] = 90;
+									break;
+								case 1: //North East                                         //5-4-3
+									ProtozoaPosition[b][1] += MoveDistance;                  //6- -2 Model of Direction
+									ProtozoaPosition[b][2] -= MoveDistance;                  //7-0-1
+									ProtozoaPosition[b][3] = 45;
+									break;
+								case 0: //North
+									ProtozoaPosition[b][1] += 0;
+									ProtozoaPosition[b][2] -= MoveDistance;
+									ProtozoaPosition[b][3] = 0;
+									break;
+								case 7: //North West
+									ProtozoaPosition[b][1] -= MoveDistance;
+									ProtozoaPosition[b][2] -= MoveDistance;
+									ProtozoaPosition[b][3] = 315;
+									break;
+								case 6: //West
+									ProtozoaPosition[b][1] -= MoveDistance;
+									ProtozoaPosition[b][2] += 0;
+									ProtozoaPosition[b][3] = 270;
+									break;
+								case 5: //South West
+									ProtozoaPosition[b][1] -= MoveDistance;
+									ProtozoaPosition[b][2] += MoveDistance;
+									ProtozoaPosition[b][3] = 225;
+									break;
+								}
+							List[i].style.transform = "translate(" + (StagePos[0] + ProtozoaPosition[b][1]) + "px," + (StagePos[1] + ProtozoaPosition[b][2]) + "px) " + "rotate(" + ProtozoaPosition[b][3] + "deg)";
+							document.getElementById("HitBox " + HitBoxIdd).style.transform = "translate(" + (StagePos[0] + ProtozoaPosition[b][1]) + "px," + (StagePos[1] + ProtozoaPosition[b][2]) + "px) " + "rotate(" + ProtozoaPosition[b][3] + "deg)";
+							if (List[i].className == "Phacus Protozoa"){ //Make phacus spin
+								document.getElementById("ProtozaPic " + HitBoxIdd).src = "PictureFolder/ProtozoaSprite/Phacus/1.png";
+								setTimeout(function() {
+									document.getElementById("ProtozaPic " + HitBoxIdd).src = "PictureFolder/ProtozoaSprite/Phacus/0.png";
+								}, 500);
+							}
+						}
+					}
+				}
+			}
+			
+			function AdjBright(){
+				var CoverM = document.getElementById("ScopeCoverM");
+				var Diapham = document.getElementById("DiaphamImg");
+				BCount += 10;
+				if (CoverM.style.opacity/0.04 > 25){
+					BCount = 0;
+					Diapham.src = "PictureFolder/UserInterfacePic/Diaphram6.png"
+				}else if (CoverM.style.opacity/0.04 >= 18){
+					Diapham.src = "PictureFolder/UserInterfacePic/Diaphram1.png"
+				}else if (CoverM.style.opacity/0.04 >= 14){
+					Diapham.src = "PictureFolder/UserInterfacePic/Diaphram2.png"
+				}else if (CoverM.style.opacity/0.04 >= 10){
+					Diapham.src = "PictureFolder/UserInterfacePic/Diaphram3.png"
+				}else if (CoverM.style.opacity/0.04 >= 6){
+					Diapham.src = "PictureFolder/UserInterfacePic/Diaphram4.png"
+				}else if (CoverM.style.opacity/0.04 >= 2){
+					Diapham.src = "PictureFolder/UserInterfacePic/Diaphram5.png"
+				}
+				CoverM.style.opacity = BCount/250;
+				document.body.style.backgroundColor = "rgb(" + BCount + "," + BCount + "," + BCount + ")";
+				console.log(CoverM.style.opacity/0.04);
+			}
+			
+			function AdjFine(){
+				var ZoanPic = document.getElementsByClassName("Pic");
+				if (BlurVision == 10){
+					BlurVision = 0;
+				}else{
+					BlurVision += 1;
+				}
+				document.getElementById('FineBtn').style.transform = 'rotate(' + BlurVision*(-36) + 'deg)';
+				for (var i = 0; i < ZoanPic.length; i++){
+					ZoanPic[i].style.filter = "blur(" + BlurVision + "px)";
+				}
+			}
+			
+			function ProtozaAnim(List, ListName){ //Animate the protoza!
+				for (var i = 0; i < List.length; i++){
+					var HitBoxIdd = List[i].id;
+					var HitBoxIdd = HitBoxIdd.split('');
+					var HitBoxIdd = HitBoxIdd[HitBoxIdd.length - 1];
+					document.getElementById("ProtozaPic " + HitBoxIdd).src = "PictureFolder/ProtozoaSprite/" + ListName + "/" + Math.floor((Math.random() * 5)) + ".png";
+				}
+			}
+			
+			function Intervalk(caseoh, argument1, argument2){ //Bypass forever loop at protozoa move section
+				switch(caseoh){
+					case 0:
+						setInterval(function() {
+							ProtozoaMove(argument1);
+						}, 1500);
+					break;
+					case 1:
+						setInterval(function() {
+							ProtozaAnim(argument1, argument2);
+						}, 1000);
+					default:
+						console.log('Nigga56');
+				}
+			}
+			
+			window.addEventListener('load', function() {
+				//Extract Genset info
+				var ZoanList = getCookie('GenSet');
+				var ZoanList = ZoanList.split(',');
+				console.log(ZoanList);
+				//Gen Protoza
+				GenProtozoa(ZoanList,5);
+				//Set da covers
+				SetCovers();
+				//Protozoa Move Section
+				for (var i = 0; i < ZoanList.length; i++){
+					if (ZoanList[i] == "Euglena" || ZoanList[i] == "Phacus" || ZoanList[i] == "Paramecium"){ //Move Protozoa
+						var Target = ZoanList[i];
+						Intervalk(0,document.getElementsByClassName(Target + " Protozoa")); 
+					}else if (ZoanList[i] == "Volvox" || ZoanList[i] == "Arcella" || ZoanList[i] == "Vorticella"){
+						var Target = ZoanList[i]
+						Intervalk(1,document.getElementsByClassName(Target + " Protozoa"),Target);
+					}
+				}
+			}, false);
+		</script>
+		<div class="ScopeCoverH" id="UpCover">
+			<div id="FineBtn" onclick="AdjFine()">
+				<img id="FineImg" src="PictureFolder/UserInterfacePic/FineAdjustButton.png">
+			</div>
+		</div>
+		<div class="ScopeCoverH" id="DownCover">
+			<!-- <button onclick="SetSize()" id="MagnifBtn">Change Magnification</button> -->
+			<div id="MagnifBtn" onclick="SetSize()">
+				<img src="PictureFolder/UserInterfacePic/MagnifAdjustButton.png">
+			</div>
+		</div>
+		<div class="ScopeCoverV" id="LeftCover">
+			<!-- <button onclick="MoveStage(1)" id="UpBtn" class="MovementBtn">W</button>
+			<button onclick="MoveStage(2)" id="LeftBtn" class="MovementBtn">A</button>
+			<button onclick="MoveStage(3)" id="DownBtn" class="MovementBtn">S</button>
+			<button onclick="MoveStage(4)" id="RightBtn" class="MovementBtn">D</button> -->
+			<div class="ArrowContainer">
+				<div id="UpBtn" onclick="MoveStage(1)" style="transform: rotate(180deg)">
+					<img src="PictureFolder/UserInterfacePic/MoveArrow.png">
+				</div>
+				<div id="LeftBtn" onclick="MoveStage(2)" style="transform: rotate(360deg)">
+					<img src="PictureFolder/UserInterfacePic/MoveArrow.png">
+				</div>
+			</div>
+			<div id="CenterKnob">
+				<img src="PictureFolder/UserInterfacePic/StageMovementButton.png">
+			</div>
+			<div class="ArrowContainer">
+				<div id="DownBtn" onclick="MoveStage(3)" style="transform: rotate(360deg)">
+					<img src="PictureFolder/UserInterfacePic/MoveArrow.png">
+				</div>
+				<div id="RightBtn" onclick="MoveStage(4)" style="transform: rotate(180deg)">
+					<img src="PictureFolder/UserInterfacePic/MoveArrow.png">
+				</div>
+			</div>
+		</div>
+		<div class="ScopeCoverV" id="RightCover">
+			<!-- <button onclick="AdjBright()" id="DiaphamBtn">Adjust brightness</button> -->
+			<div id="DiaphamBtn" onclick="AdjBright()">
+				<img id="DiaphamImg" src="PictureFolder/UserInterfacePic/Diaphram1.png">
+			</div>
+		</div>
+		<div id="ScopeCoverM"></div>
+	</body>
+</html>

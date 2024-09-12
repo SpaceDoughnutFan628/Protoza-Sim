@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+		body {
+			display: flex; 
+			justify-content: center; 
+			align-item: center;
+		}
+		img {
+			max-width: 100%; 
+			height: 100%;
+		}
+		p {
+			margin-left: 10px;
+		}
+		#FlexContainer {
+			display: flex; 
+			flex-direction: row; 
+			justify-content: space-around; 
+			background-color: #FFF8DC; 
+			border: 2px solid black;
+		}
+		#ListContainer {
+			background-color: #E9967A; 
+			border: 2px solid black; 
+			overflow: hidden;
+		}
+		#DescContainer {
+			width: 50%;
+			border: 2px solid blue; 
+			height: 90%; 
+			align-self: center;
+		}
+		.SpeciesList {
+			aspect-ratio: 1/1; 
+			border: 2px solid black; 
+			background-color: red;
+		}
+		#ProtozaAnatom {
+			position: absolute;
+			border: 2px solid green;
+			margin: 10px;
+			width: 20%;
+			aspect-ratio: 1/1;
+		}
+		#ProtozaTaxom {
+			position: absolute;
+			border: solid 2px red; 
+			margin: 10px;
+			width: 20%;
+			aspect-ratio: 1/1;
+			transform: translate(105%, 105%);
+		}
+		</style>
+	</head>
+	
+	<body>
+		<script>
+		let ScrollPos = 0; //position of mouse
+		var win = window,
+			doc = document,
+			docElem = doc.documentElement,
+			body = doc.getElementsByTagName('body')[0],
+			WindowX = win.innerWidth || docElem.clientWidth || body.clientWidth,
+			WindowY = win.innerHeight|| docElem.clientHeight|| body.clientHeight;
+		
+		function setCookie(exdays) {
+			const d = new Date();
+			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+			let expires = "expires=" + d.toUTCString();
+			document.cookie = expires + ";path=/"; //Expire Date
+			document.cookie = "Discovered=[0,0,0,0,0,0,0,0,0,0];"; //Discovered protozoa
+			document.cookie = "GenSet=None,None;"; //Set of protozoa that can be spawn
+			document.cookie = "AxlRose=1;";
+		}
+		
+		function SetCovers (){
+			document.getElementById("FlexContainer").style.width = WindowX + "px";
+			document.getElementById("FlexContainer").style.height = WindowY + "px";
+			document.getElementById("ListContainer").style.width = (WindowY/3 - WindowY/6 + WindowX/50) + "px";
+			for (let i = 0; i < document.getElementsByTagName('p').length; i++){
+				document.getElementsByTagName('p')[i].style.fontSize = WindowY/50 + "px";
+			}
+			let ListSpecies = document.getElementsByClassName("SpeciesList");
+			for (let i = 0; i < ListSpecies.length; i++){
+				ListSpecies[i].style.height = (WindowY/3 - WindowY/6) + "px";
+				ListSpecies[i].style.transform = "translate(" + (WindowX/100) + "px," + ((i+1)*WindowY/50) + "px)";
+			}
+		}
+			
+		function getCookie(cname) {
+			let name = cname + "=";
+			let decodedCookie = decodeURIComponent(document.cookie);
+  			let ca = decodedCookie.split(';');
+			for(let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+		
+		//use 2i to index the array
+		function UpdateDiscList(List){
+			for (let i=0; i < ((List.length + 1)/2); i++){
+					switch(List[i*2]){
+						case '0':
+							document.getElementById("Un" + (i+1)).style.backgroundColor = "#00FFFF";
+							document.getElementById("Un" + (i+1)).style.opacity = 0;
+							break;
+						case '1':
+							document.getElementById("Un" + (i+1)).style.backgroundColor = "#7FFFD4";
+							document.getElementById("Un" + (i+1)).style.opacity = 1;
+							break;
+						default:
+							console.log("Dont you cry tonight");
+				}
+			}
+		}
+		
+		function ToggleDesc(Id){
+			if (document.getElementById(Id).style.opacity == 1){
+				var p = document.getElementsByTagName('p');
+				var a = document.getElementsByTagName('a')[0];
+				var AnatomPic = document.getElementById('Anatom');
+				switch (Id[2]){
+					case '1':
+						p[0].innerHTML = 'Clade: Archaeplastida Chlorophyta';
+						p[1].innerHTML = 'Phylum: ?';
+						p[2].innerHTML = 'Class: Chlorophyceae';
+						p[3].innerHTML = 'Order: Sphaeropleales';
+						p[4].innerHTML = 'Family: Hydrodictyaceae';
+						p[5].innerHTML = 'Genus: Pediastrum';
+						a.href = 'https://www.youtube.com/watch?v=26Zl9SEtLpg';
+					break;
+					case '2':
+						p[0].innerHTML = 'Clade: Amorphea';
+						p[1].innerHTML = 'Phylum: Amoebozoa';
+						p[2].innerHTML = 'Class: Tubulinea';
+						p[3].innerHTML = 'Order: Arcellinida';
+						p[4].innerHTML = 'Family: Arcellidae';
+						p[5].innerHTML = 'Genus: Arcella';
+						a.href = 'https://www.youtube.com/watch?v=s7M3UV4c5XQ';
+					break;
+					case '3':
+						p[0].innerHTML = 'Clade: ?';
+						p[1].innerHTML = 'Phylum: ?';
+						p[2].innerHTML = 'Class: ?';
+						p[3].innerHTML = 'Order: ?';
+						p[4].innerHTML = 'Family: ?';
+						p[5].innerHTML = 'Genus: ?'
+						a.href = 'https://www.youtube.com';
+					break;
+					case '4':
+						p[0].innerHTML = 'Clade: Archaeplastida Chlorophyta';
+						p[1].innerHTML = 'Phylum: ?';
+						p[2].innerHTML = 'Class: Chlorophyceae';
+						p[3].innerHTML = 'Order: Sphaeropleales';
+						p[4].innerHTML = 'Family: Scenedesmaceae';
+						p[5].innerHTML = 'Genus: Desmodesmus';
+						a.href = 'https://www.youtube.com/watch?v=S5cQENjx6As';
+					break;
+					case '5':
+						p[0].innerHTML = 'Clade: ?';
+						p[1].innerHTML = 'Phylum: Euglenozoa';
+						p[2].innerHTML = 'Class: Euglenida';
+						p[3].innerHTML = 'Order: Euglenales';
+						p[4].innerHTML = 'Family: Euglenaceae';
+						p[5].innerHTML = 'Genus: Euglena';
+						a.href = 'https://www.youtube.com/watch?v=fI7nEWUjk3A';
+					break;
+					case '6':
+						p[0].innerHTML = 'Clade: SAR';
+						p[1].innerHTML = 'Phylum: Ciliophora';
+						p[2].innerHTML = 'Class: Oligohymenophorea';
+						p[3].innerHTML = 'Order: Peniculida';
+						p[4].innerHTML = 'Family: Parameciidae';
+						p[5].innerHTML = 'Genus: Paramecium';
+						a.href = 'https://www.youtube.com/watch?v=a4aZE5FQ284';
+					break;
+					case '7':
+						p[0].innerHTML = 'Clade: ?';
+						p[1].innerHTML = 'Phylum: Euglenozoa';
+						p[2].innerHTML = 'Class: Euglenida';
+						p[3].innerHTML = 'Order: Euglenophyceae';
+						p[4].innerHTML = 'Family: Phacaceae';
+						p[5].innerHTML = 'Genus: Phacus';
+						a.href = 'https://www.youtube.com/watch?v=qnZrcM8_HOI';
+					break;
+					case '8':
+						p[0].innerHTML = 'Clade: Viridiplantae';
+						p[1].innerHTML = 'Phylum: ?';
+						p[2].innerHTML = 'Class: Chlorophyceae';
+						p[3].innerHTML = 'Order: Chlamydomonadales';
+						p[4].innerHTML = 'Family: Volvocaceae';
+						p[5].innerHTML = 'Genus: Volvox';
+						a.href = 'https://www.youtube.com/watch?v=v6D9OUoD7E4';
+					break;
+					case '9':
+						p[0].innerHTML = 'Clade: SAR';
+						p[1].innerHTML = 'Phylum: Ciliophora';
+						p[2].innerHTML = 'Class: Oligohymenophorea';
+						p[3].innerHTML = 'Order: Sessilida';
+						p[4].innerHTML = 'Family: Vorticellidae';
+						p[5].innerHTML = 'Genus: Vorticella';
+						a.href = 'https://www.youtube.com/watch?v=Z8O7zPkHusI';
+					break;
+					case '10':
+						p[0].innerHTML = 'Clade: Charophyta';
+						p[1].innerHTML = 'Phylum: ?';
+						p[2].innerHTML = 'Class: Zygnematophyceae';
+						p[3].innerHTML = 'Order: Zygnematales';
+						p[4].innerHTML = 'Family: Zygnemataceae';
+						p[5].innerHTML = 'Genus: Spirogyra';
+						a.href = 'https://www.youtube.com/watch?v=Cor_ek7foVM';
+					break;
+					default:
+						p[0].innerHTML = 'Nigga: ';
+						p[1].innerHTML = 'Niggard: ';
+						p[2].innerHTML = 'Niggers: ';
+						p[3].innerHTML = 'Nigardy: ';
+						p[4].innerHTML = 'Negros: ';
+						p[5].innerHTML = 'Gladigga: ';
+						a.href = 'https://www.youtube.com';
+				}
+				AnatomPic.src = 'PictureFolder/ProtozoaSprite/ProtozaInfo/' + Id[2] + '.png';
+			}
+		}
+		
+		function ScrollBarr(event){
+			var Scrolled = event.deltaY;
+			if (Scrolled > 0){
+				newPos = parseInt(ScrollPos) + WindowY/100;
+				ScrollPos = ScrollPos + WindowY/100;
+			}else{
+				newPos = parseInt(ScrollPos) - WindowY/100;
+				ScrollPos = ScrollPos - WindowY/100;
+			}
+			let ListSpecies = document.getElementsByClassName("SpeciesList");
+			for (let i = 0; i < ListSpecies.length; i++){
+				ListSpecies[i].style.transform = "translate(" + (WindowX/100) + "px," + ((i+1)*WindowY/50 + newPos) + "px)";
+			}
+		}
+		
+		window.addEventListener('load', function() {
+			SetCovers();
+			var DiscoverList = getCookie("Discovered");
+			var DiscoverList = DiscoverList.split('');
+			DiscoverList.shift();
+			DiscoverList.pop();
+			UpdateDiscList(DiscoverList);
+		}, false);
+		</script>
+		<div id="FlexContainer">
+			<div id="ListContainer" onwheel="ScrollBarr(event)">
+				<div class="SpeciesList" id="Un1" onclick="ToggleDesc('Un1')"><img src="PictureFolder/ProtozoaSprite/Pediastrum/0.png"></div>
+				<div class="SpeciesList" id="Un2" onclick="ToggleDesc('Un2')"><img src="PictureFolder/ProtozoaSprite/Arcella/0.png"></div>
+				<div class="SpeciesList" id="Un3" onclick="ToggleDesc('Un3')"><img src="PictureFolder/ProtozoaSprite/Vampyrella/0.png"></div>
+				<div class="SpeciesList" id="Un4" onclick="ToggleDesc('Un4')"><img src="PictureFolder/ProtozoaSprite/Desmodesmus/0.png"></div>
+				<div class="SpeciesList" id="Un5" onclick="ToggleDesc('Un5')"><img src="PictureFolder/ProtozoaSprite/Euglena/0.png"></div>
+				<div class="SpeciesList" id="Un6" onclick="ToggleDesc('Un6')"><img src="PictureFolder/ProtozoaSprite/Paramecium/0.png"></div>
+				<div class="SpeciesList" id="Un7" onclick="ToggleDesc('Un7')"><img src="PictureFolder/ProtozoaSprite/Phacus/0.png"></div>
+				<div class="SpeciesList" id="Un8" onclick="ToggleDesc('Un8')"><img src="PictureFolder/ProtozoaSprite/Volvox/0.png"></div>
+				<div class="SpeciesList" id="Un9" onclick="ToggleDesc('Un9')"><img src="PictureFolder/ProtozoaSprite/Vorticella/0.png"></div>
+				<div class="SpeciesList" id="Un10" onclick="ToggleDesc('Un9')"><img src="PictureFolder/ProtozoaSprite/Spirogyra/0.png"></div>
+			</div>
+			<div id="DescContainer">
+				<div id="ProtozaAnatom">
+					<img src="" id="Anatom">
+				</div>
+				<div id="ProtozaTaxom">
+					<p></p>
+					<p></p>
+					<p></p>
+					<p></p>
+					<p></p>
+					<p></p>
+					<p><a href="">Take a look at a real example</a></p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-image: url("PictureFolder/Placeholder.gif");
+				background-repeat: no-repeat;
+				background-attachment: fixed;
+				background-size: cover;
+			}
+			
+			.TpButton {
+				width: 1px;
+				aspect-ratio: 2/1;
+				margin: 10px;
+				transition: width 0.75s; 
+				transition-timing-function: ease-in-out;
+			}
+			
+			.TpButton:hover {
+				box-shadow: 10px 10px;
+			}
+			
+			.ColumnContainer {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			
+			.RowContainer {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			
+			#GameTitle {
+				border: solid red 2px;
+			}
+			
+			img {
+				max-width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<script>
+		var win = window,
+			doc = document,
+			docElem = doc.documentElement,
+			body = doc.getElementsByTagName('body')[0],
+			WindowX = win.innerWidth || docElem.clientWidth || body.clientWidth,
+			WindowY = win.innerHeight|| docElem.clientHeight|| body.clientHeight;
+			
+		function setCookie(exdays) {
+			const d = new Date();
+			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+			let expires = "expires=" + d.toUTCString();
+			document.cookie = expires + ";path=/"; //Expire Date
+			document.cookie = "Discovered=[0,0,0,0,0,0,0,0,0,0];"; //Discovered protozoa
+			document.cookie = "GenSet=None,None;"; //Set of protozoa that can be spawn
+			document.cookie = "AxlRose=1;";
+		}
+		
+		function getCookie(cname) {
+			let name = cname + "=";
+			let decodedCookie = decodeURIComponent(document.cookie);
+  			let ca = decodedCookie.split(';');
+			for(let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+
+		function checkCookie() {
+			if (getCookie("AxlRose")){
+				console.log("Cookie found");
+			}else{
+				console.log("Cookie not found");
+				setCookie(100);
+			}
+		}
+
+		function SetCovers(d){
+			switch(d){
+				case 1:
+					document.body.style.height = WindowY + "px";
+					for (let g = 0; g < document.getElementsByClassName("ColumnContainer").length; g++){
+						document.getElementsByClassName("ColumnContainer")[g].style.height = WindowY + "px";
+						document.getElementsByClassName("ColumnContainer")[g].style.width = WindowX + "px";
+					}
+					for (let g = 0; g < document.getElementsByClassName("RowContainer").length; g++){
+						document.getElementsByClassName("RowContainer")[g].style.width = (WindowX/1.25) + "px";
+					}
+					for (let g = 0; g < document.getElementsByClassName("TpButton").length; g++){
+						document.getElementsByClassName("TpButton")[g].style.width = (WindowX/10) + "px";
+					}
+					break;
+				default:
+					console.log("In a cold novembre rain");
+			}
+		}
+		
+		function PlayMusic(){
+			if (document.getElementById("MainTheme").paused){
+				document.getElementById("MainTheme").play();
+			}else{
+				document.getElementById("MainTheme").pause();
+			}
+		}
+		
+		window.addEventListener('load', function() {
+			SetCovers(1);
+			document.getElementById("Pad2").style.height = (WindowY - document.getElementById("GameTitle").style.height - document.getElementById("PlayBtn").style.height - document.getElementById("Tutorial").style.height) + "px";
+			checkCookie();
+		}, false);
+		</script>
+		<audio id="MainTheme" loop>
+			<source src="Music/OGG/NovemberRain.ogg" type="audio/ogg">
+			<source src="Music/MP3/NovemberRain.mp3" type="audio/mpeg">
+		</audio>
+		<div class="ColumnContainer">
+			<div class="RowContainer">
+				<div id="MuteButton" class="TpButton" onclick="PlayMusic()" onmouseover="this.style.width = (WindowX/5) + 'px'" onmouseout="this.style.width = (WindowX/10) + 'px'"><img src="PictureFolder/UserInterfacePic/MusicBackground.jpg"></div>
+				<div id="Tutorial" class="TpButton" onmouseover="this.style.width = (WindowX/5) + 'px'" onmouseout="this.style.width = (WindowX/10) + 'px'"><a href="Tutorial.html"><img src="PictureFolder/UserInterfacePic/TutorialBackground.jpg"></a></div>
+			</div>
+			<div id="GameTitle" >Protozoa Simulator</div>
+			<div id="PlayBtn" class="TpButton" onmouseover="this.style.width = (WindowX/5) + 'px'" onmouseout="this.style.width = (WindowX/10) + 'px'"><a href="GenerateProtozoa.html"><img src="PictureFolder/UserInterfacePic/PlayBackground.png"></a></div>
+			<div id= "Pad2"></div>
+			<div class="RowContainer">
+				<div id="ToPreTest" class="TpButton" onmouseover="this.style.width = (WindowX/5) + 'px'" onmouseout="this.style.width = (WindowX/10) + 'px'"><a href="https://forms.gle/KsaD8rn8MsCio6ap9"><img src="PictureFolder/UserInterfacePic/TestBackground.jpg"></a></div>
+				<div id="Inform" class="TpButton" onmouseover="this.style.width = (WindowX/5) + 'px'" onmouseout="this.style.width = (WindowX/10) + 'px'"><a href="LongText.html"><img src="PictureFolder/UserInterfacePic/LongTextBackground.png"></a></div>
+			</div>
+		</div>
+	</body>
+</html>

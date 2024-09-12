@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			#StatsContainer {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			#RowContainer {
+				position: absolute;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-around;
+				border: solid red 2px;
+			}
+			.Selection {
+				border: solid blue 5px;
+				height: 200px;
+				margin: 10px;
+				opacity: 0; 
+				transition-timing-function: ease-in-out;
+			}
+			#Select1 {
+				transition: opacity 2s;
+			}
+			#Select2{
+				transition: opacity 4s;
+			}
+			#Select3{
+				transition: opacity 6s;
+			}
+			img {
+				max-width: 100%;
+				height: 100%;
+			}
+			#StatsButton {
+				width: 1px;
+				aspect-ratio: 2/1;
+				margin: 10px;
+				transition: width 0.75s; 
+				transition-timing-function: ease-in-out;
+				border: solid 2px pink;
+			}
+			#StatsButton:hover {
+				box-shadow: 10px 10px;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<script>
+		var win = window,
+			doc = document,
+			docElem = doc.documentElement,
+			body = doc.getElementsByTagName('body')[0],
+			WindowX = win.innerWidth || docElem.clientWidth || body.clientWidth,
+			WindowY = win.innerHeight|| docElem.clientHeight|| body.clientHeight;
+		
+		function setCookie(exdays) {
+			const d = new Date();
+			d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+			let expires = "expires=" + d.toUTCString();
+			document.cookie = expires + ";path=/"; //Expire Date
+			document.cookie = "Discovered=[0,0,0,0,0,0,0,0,0,0];"; //Discovered protozoa
+			document.cookie = "GenSet=None,None;"; //Set of protozoa that can be spawn
+			document.cookie = "AxlRose=1;";
+		}
+		
+		function getCookie(cname) {
+			let name = cname + "=";
+			let decodedCookie = decodeURIComponent(document.cookie);
+  			let ca = decodedCookie.split(';');
+			for(let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+		
+		function ChangeCookie(Set) { //Set of protozoa that can be spawn
+			switch(Set){
+				case 0:
+					document.cookie = "GenSet=Arcella,Vorticella,Paramecium,Phacus;"; //Set of protozoa that can be spawn
+					break;
+				case 1:
+					document.cookie = "GenSet=Euglena,Pediastrum,Desmodesmus,Volvox;";
+					break;
+				case 2:
+					document.cookie = "GenSet=Spirogyra;";
+					break;
+				default:
+					console.log("I am on a night train!");
+			}
+		}
+		
+		function SetCovers(){
+			document.body.style.height = WindowY + "px";
+			document.getElementById("RowContainer").style.height = (5*WindowY/6) + "px";
+			document.getElementById("RowContainer").style.width = WindowX + "px";
+			document.getElementById("RowContainer").style.transform = "translateY(" + WindowY/6 + "px)";
+			document.getElementById("StatsContainer").style.height = WindowY/6 + "px";
+			document.getElementById("StatsContainer").style.width = WindowX/1.025 + "px";
+			document.getElementById("StatsButton").style.width = WindowY/3 + "px";
+			for (let g = 0; g < document.getElementsByClassName("Selection").length; g++){
+				document.getElementsByClassName("Selection")[g].style.height = (5*WindowY/6 - 30) + "px";
+				document.getElementsByClassName("Selection")[g].style.width = WindowX/3.25 + "px";
+				document.getElementsByClassName("Selection")[g].style.opacity = 1;
+			}
+		}
+		
+		window.addEventListener('load', function() {
+			SetCovers();
+		}, false);
+		</script>
+		<div id="StatsContainer">
+			<div id="Pad1"></div>
+			<div id="StatsButton"><a href="Stats.html"><img src="PictureFolder/UserInterfacePic/StatsBackground.jpg"></a></div>
+		</div>
+		<div id="RowContainer">
+			<div class="Selection" id="Select1" onclick="ChangeCookie(0);"><a href="MainGame.html"><img src="PictureFolder/PondPic/BeautifulLake.jpg"></a></div>
+			<div class="Selection" id="Select2" onclick="ChangeCookie(1);"><a href="MainGame.html"><img src="PictureFolder/PondPic/BeautifulRiver.jpg"></a></div>
+			<div class="Selection" id="Select3" onclick="ChangeCookie(2);"><a href="MainGame.html"><img src="PictureFolder/PondPic/BeautifulWaterfall.jpg"></a></div>
+		</div>
+	</body>
+</html>
